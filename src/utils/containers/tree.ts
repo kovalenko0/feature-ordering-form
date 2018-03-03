@@ -1,77 +1,63 @@
-class TreeNode<Content> {
-  protected readonly _canHaveChildren: boolean = false
+import { addIfMissing } from '../array-utils'
 
-  public canHaveChildren(): this is TreeBranch<Content> {
-    return this._canHaveChildren
+export class TreeNode<BranchContent, LeafContent> {
+  protected canHaveChildren: boolean
+
+  public content: BranchContent | LeafContent
+
+  public isBranch(): this is TreeBranch<BranchContent, LeafContent> {
+    return this.canHaveChildren
   }
-
-  constructor(
-    public content?: Content
-  ) {}
+  public isLeaf(): this is TreeLeaf<BranchContent, LeafContent> {
+    return !this.canHaveChildren
+  }
 }
 
-class TreeBranch<Content> extends TreeNode<Content> {
-  protected readonly _canHaveChildren = true
+export class TreeBranch<BranchContent, LeafContent> extends TreeNode<BranchContent, LeafContent> {
+  constructor(content: BranchContent) {
+    super()
+    this.canHaveChildren = true
+    this.content = content
+  }
 
-  private children = new Set<TreeNode<Content>>()
+  public content: BranchContent
+
+  private children: TreeNode<BranchContent, LeafContent>[] = []
+
+  public getChildren() {
+    return this.children.slice()
+  }
 
   public getChildrenIterator() {
     return this.children.entries()
   }
 
-  public addBranch(content?: Content): TreeBranch<Content> {
-    const child = new TreeBranch<Content>(content)
-
-    this.children.add(child)
-
+  public addBranch(content: BranchContent): TreeBranch<BranchContent, LeafContent> {
+    const child = new TreeBranch<BranchContent, LeafContent>(content)
+    this.children.push(child)
     return child
   }
 
-  public addLeaf(content?: Content): TreeNode<Content> {
-    const child = new TreeNode<Content>(content)
-
-    this.children.add(child)
-
+  public addLeaf(content: LeafContent): TreeNode<BranchContent, LeafContent> {
+    const child = new TreeLeaf<BranchContent, LeafContent>(content)
+    this.children.push(child)
     return child
   }
 }
 
-export class TreeIterator<Content> {
-  constructor(
-    public tree: TreeNode<Content>
-  ) {
-    if (tree.canHaveChildren()) {
-      this.currentNode = tree
-      this.currentNodeIterator = tree.getChildrenIterator()
-      this.currentIndex = 0
-    } else {
-      throw new Error('TreeIterator can only be created for nodes, that can have children')
-    }
+export class TreeLeaf<BranchContent, LeafContent> extends TreeNode<BranchContent, LeafContent> {
+  constructor(content: LeafContent) {
+    super()
+    this.content = content
   }
 
-  private currentNode: TreeNode<Content>
-  
-  private currentIndex: number
-
-  private currentNodeIterator: IterableIterator<[TreeNode<Content>, TreeNode<Content>]>
-
-  public getIndex() {
-    return this.currentIndex
-  }
-
-  public getNode() {
-    return this.currentNode
-  }
-
-  public next() {
-    const result = this.currentNodeIterator.next()
-  }
+  public content: LeafContent
 }
 
-export function createTreeRoot<Content>(content?: Content) {
-  return new TreeBranch<Content>(content)
+export function createTreeRoot<BranchContent, LeafContent>(content: BranchContent) {
+  return new TreeBranch<BranchContent, LeafContent>(content)
 }
 
-const myTree = createTreeRoot<string>('0')
+const myTree = createTreeRoot<string, string>('0  ')
 
 myTree.addBranch('0.0').addLeaf('0.0.0')
