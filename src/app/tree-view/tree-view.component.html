@@ -1,0 +1,15 @@
+<div>
+  <label>
+    <input
+      type="checkbox"
+      (change)="featureSelect($event.target.checked)"
+      [checked]="_tree.content.selected"
+      [indeterminate]="!_tree.content.selected && partiallySelected"
+      />
+    {{(treeAsBranch || treeAsLeaf).content.name}}{{treeAsBranch && ':'}}
+  </label>
+</div>
+<app-tree-view
+  *ngFor="let option of (treeAsBranch ? treeAsBranch.getChildren() : [])"
+  [tree]=option>
+</app-tree-view>
