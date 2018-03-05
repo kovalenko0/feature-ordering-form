@@ -16,3 +16,13 @@ export function lastItem<ItemType>(array: ItemType[]) {
         return array[array.length - 1]
     }
 }
+
+export function remove<ItemType>(array: ItemType[], item: ItemType) {
+    if (!contains(array, item)) {
+        return array
+    } else {
+        const itemLocation = array.indexOf(item)
+        array.splice(itemLocation, 1)
+        return array
+    }
+}

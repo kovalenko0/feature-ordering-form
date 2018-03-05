@@ -1,9 +1,10 @@
-import { BrowserModule } from '@angular/platform-browser';
-import { NgModule } from '@angular/core';
+import { BrowserModule } from '@angular/platform-browser'
+import { NgModule } from '@angular/core'
+import { HttpClientModule } from '@angular/common/http'
 
-
-import { AppComponent } from './app.component';
-import { TreeViewComponent } from './tree-view/tree-view.component';
+import { AppComponent } from './app.component'
+import { TreeViewComponent } from './tree-view/tree-view.component'
+import { FeaturesStorageService } from './features-storage.service';
 
 
 @NgModule({
@@ -12,9 +13,12 @@ import { TreeViewComponent } from './tree-view/tree-view.component';
     TreeViewComponent
   ],
   imports: [
-    BrowserModule
+    BrowserModule,
+    HttpClientModule
   ],
-  providers: [],
+  providers: [
+    FeaturesStorageService
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

@@ -1,7 +1,9 @@
-import { Component } from '@angular/core';
-import { TreeBranch, createTreeRoot } from '../utils/containers/tree';
-import { Feature } from '../entities/feature';
-import { FeatureGroupUIProps, FeatureUIProps } from './tree-view/tree-view.component';
+import { Component } from '@angular/core'
+import { TreeBranch, createTreeRoot } from '../utils/containers/tree'
+import { Feature, FeatureSet } from '../entities/feature'
+import { FeaturesStorageService } from './features-storage.service'
+import { FeaturesOrderStorage } from './features-order-storage'
+import { HttpClient } from '@angular/common/http'
 
 @Component({
   selector: 'app-root',
@@ -9,67 +11,45 @@ import { FeatureGroupUIProps, FeatureUIProps } from './tree-view/tree-view.compo
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
-  constructor() {
-    const features: Feature[] = [
-      {
-        name: 'File system drivers',
-        extendable: true,
-        options: [
-          {
-            name: 'NTFS',
-            extendable: false
-          },
-          {
-            name: 'Fat32',
-            extendable: false
-          },
-          {
-            name: 'ext4',
-            extendable: false
-          }
-        ]
-      },
-      {
-        name: 'Multimedia features',
-        extendable: true,
-        options: [
-          {
-            name: 'Audio drivers',
-            extendable: false
-          },
-          {
-            name: 'Video drivers',
-            extendable: false
-          }
-        ]
-      }
-    ]
-
-    this.features = createTreeFromFeatures(features)
+  constructor(
+    private featuresStorage: FeaturesStorageService,
+    private client: HttpClient
+  ) {
+    this.orderFormStore = new FeaturesOrderStorage()
+    this.features = this.featuresStorage.getAvailableFeatures()
+    this.orderFormStore.selectFeature(this.featuresStorage.getAvailableFeatures().getChildren()[1])
   }
 
-  public features: TreeBranch<FeatureGroupUIProps, FeatureUIProps>
-}
+  public features: TreeBranch<FeatureSet, Feature>
 
-function createTreeFromFeatures(features: Feature[], tree?: TreeBranch<FeatureGroupUIProps, FeatureUIProps>) {
-  const branch = tree || new TreeBranch<FeatureGroupUIProps, FeatureUIProps>({ name: 'Additional OS features', icon: null, selected: false })
-  
-  features.forEach(feature => {
-    if (feature.extendable) {
-      const newBranch = branch.addBranch({
-        name: feature.name,
-        selected: false,
-        icon: null
-      })
-      createTreeFromFeatures(feature.options, newBranch)
-    } else {
-      branch.addLeaf({
-        name: feature.name,
-        selected: false,
-        icon: null
-      })
-    }
-  })
+  public orderFormStore: FeaturesOrderStorage
 
-  return branch
+  public responseURL: string | null
+
+  public serverError: boolean = false
+
+  public submit() {
+    this
+      .client
+      .post(
+        'https://preprod.paymeservice.com/api/generate-sale',
+        {
+          seller_payme_id: 'MPL14985-68544Z1G- SPV5WK2K-0WJWHC7N',
+          sale_price: this.orderFormStore.getTotalPrice(),
+          currency: 'USD',
+          product_name: 'Payment for files',
+          installments: '1',
+          language: 'en'
+        }
+      )
+      .subscribe(
+        (result: any) => {
+          this.responseURL = result.sale_url
+          this.serverError = false
+        },
+        (error: any) => {
+          this.serverError = true
+        }
+      )
+  }
 }

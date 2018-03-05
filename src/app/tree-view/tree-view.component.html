@@ -3,13 +3,15 @@
     <input
       type="checkbox"
       (change)="featureSelect($event.target.checked)"
-      [checked]="_tree.content.selected"
-      [indeterminate]="!_tree.content.selected && partiallySelected"
+      [checked]="selected"
+      [indeterminate]="partiallySelected"
       />
-    {{(treeAsBranch || treeAsLeaf).content.name}}{{treeAsBranch && ':'}}
+    {{(treeAsBranch || treeAsLeaf).content.name}}{{treeAsBranch && ':'}}{{treeAsLeaf && (" $" + treeAsLeaf.content.price.toFixed(2))}}
   </label>
 </div>
 <app-tree-view
   *ngFor="let option of (treeAsBranch ? treeAsBranch.getChildren() : [])"
-  [tree]=option>
+  [tree]=option
+  [orderFormStore]=orderFormStore
+  >
 </app-tree-view>

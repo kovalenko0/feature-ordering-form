@@ -1,13 +1,8 @@
-export type Feature =
-  {
-    name: string
-  } &
-  (
-    {
-      extendable: false
-    } | 
-    {
-      extendable: true
-      options: Feature[]
-    }
-  )
+export interface Feature {
+  name: string
+  price: number
+}
+
+export interface FeatureSet {
+  name: string
+}
