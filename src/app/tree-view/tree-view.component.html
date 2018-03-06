@@ -5,13 +5,15 @@
       (change)="featureSelect($event.target.checked)"
       [checked]="selected"
       [indeterminate]="partiallySelected"
+      [disabled]=disabled
       />
-    {{(treeAsBranch || treeAsLeaf).content.name}}{{treeAsBranch && ':'}}{{treeAsLeaf && (" $" + treeAsLeaf.content.price.toFixed(2))}}
+    {{label}}
   </label>
 </div>
 <app-tree-view
-  *ngFor="let option of (treeAsBranch ? treeAsBranch.getChildren() : [])"
+  *ngFor="let option of children"
   [tree]=option
   [orderFormStore]=orderFormStore
+  [disabled]=disabled
   >
 </app-tree-view>

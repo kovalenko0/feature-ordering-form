@@ -20,41 +20,48 @@ export class TreeViewComponent {
   @Input()
   public depth: number = 0
 
-  public _tree: FeatureNode
+  @Input()
+  public disabled: boolean = false
 
   @Input()
-  public set tree(tree: FeatureNode) {
-    if (!tree) {
-      return
-    }
+  public tree: FeatureNode
 
-    if (tree.isBranch()) {
-      this.treeAsBranch = tree
-      this.treeAsLeaf = null
-    } else if (tree.isLeaf()) {
-      this.treeAsLeaf = tree
-      this.treeAsBranch = null
+  public get children() {
+    if (this.tree.isBranch()) {
+      return this.tree.getChildren()
+    } else {
+      return []
     }
-    this._tree = tree
   }
 
-  public treeAsBranch: TreeBranch<FeatureSet, Feature> | null
-
-  public treeAsLeaf: TreeLeaf<FeatureSet, Feature> | null
-
+  public get label() {
+    return (
+      this.tree.content.name +
+      (
+        this.tree.isBranch()
+          ? ':'
+          : ''
+      ) +
+      (
+        this.tree.isLeaf()
+          ? '$' + this.tree.content.price.toFixed(2)
+          : ''
+      )
+    )
+  }
   public get selected() {
-    return this.orderFormStore.getFeatureSelectionState(this._tree) === 'selected'
+    return this.orderFormStore.getFeatureSelectionState(this.tree) === 'selected'
   }
 
   public get partiallySelected() {
-    return this.orderFormStore.getFeatureSelectionState(this._tree) === 'partially-selected'
+    return this.orderFormStore.getFeatureSelectionState(this.tree) === 'partially-selected'
   }
 
   public featureSelect(selected: boolean) {
     if (selected) {
-      this.orderFormStore.selectFeature(this._tree)
+      this.orderFormStore.selectFeature(this.tree)
     } else {
-      this.orderFormStore.deselectFeature(this._tree)      
+      this.orderFormStore.deselectFeature(this.tree)      
     }
   }
 }

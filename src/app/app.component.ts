@@ -20,36 +20,17 @@ export class AppComponent {
     this.orderFormStore.selectFeature(this.featuresStorage.getAvailableFeatures().getChildren()[1])
   }
 
+  public mode: 'edit' | 'order' = 'order'
+
   public features: TreeBranch<FeatureSet, Feature>
 
   public orderFormStore: FeaturesOrderStorage
 
-  public responseURL: string | null
+  public editForm() {
+    this.mode = 'edit'
+  }
 
-  public serverError: boolean = false
-
-  public submit() {
-    this
-      .client
-      .post(
-        'https://preprod.paymeservice.com/api/generate-sale',
-        {
-          seller_payme_id: 'MPL14985-68544Z1G- SPV5WK2K-0WJWHC7N',
-          sale_price: this.orderFormStore.getTotalPrice(),
-          currency: 'USD',
-          product_name: 'Payment for files',
-          installments: '1',
-          language: 'en'
-        }
-      )
-      .subscribe(
-        (result: any) => {
-          this.responseURL = result.sale_url
-          this.serverError = false
-        },
-        (error: any) => {
-          this.serverError = true
-        }
-      )
+  public previewForm() {
+    this.mode = 'order'
   }
 }

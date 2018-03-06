@@ -1,0 +1,12 @@
+<div>
+  <label>
+    {{label}}
+  </label>
+</div>
+<app-editable-tree-view
+  *ngFor="let option of children"
+  [tree]=option
+  [orderFormStore]=orderFormStore
+  [disabled]=disabled
+  >
+</app-editable-tree-view>

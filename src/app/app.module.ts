@@ -5,19 +5,25 @@ import { HttpClientModule } from '@angular/common/http'
 import { AppComponent } from './app.component'
 import { TreeViewComponent } from './tree-view/tree-view.component'
 import { FeaturesStorageService } from './features-storage.service';
+import { OrderFormComponent } from './order-form/order-form.component';
+import { ShopClientService } from './shop-client.service';
+import { EditableTreeViewComponent } from './editable-tree-view/editable-tree-view.component';
 
 
 @NgModule({
   declarations: [
     AppComponent,
-    TreeViewComponent
+    TreeViewComponent,
+    OrderFormComponent,
+    EditableTreeViewComponent
   ],
   imports: [
     BrowserModule,
     HttpClientModule
   ],
   providers: [
-    FeaturesStorageService
+    FeaturesStorageService,
+    ShopClientService
   ],
   bootstrap: [AppComponent]
 })

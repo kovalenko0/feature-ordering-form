@@ -1,24 +1,29 @@
-<h2>We, programmers, love trees. So we've decided to make one for feature selection form!</h2>
-<form (submit)="$event.preventDefault(); submit()">
-  <app-tree-view
-    [tree]=features
-    [orderFormStore]=orderFormStore
-    >
-  </app-tree-view>
-  <div>
-    <label>
-      Total:
-      <input type="text" readonly [value]="orderFormStore.getTotalPrice().toFixed(2)">
-    </label>
-  </div>
-  <input
-    type="submit"
-    value="Submit order"
-    />
-</form>
-<iframe
-  *ngIf="responseURL != null"
-  [src]="responseURL"
-  frameborder="0">
-</iframe>
-<div *ngIf="serverError">Got problems communicating with server. Please, try again later or contact <a href="mailto:support@support.com">our support</a></div>
+<app-order-form
+  *ngIf="mode === 'order'"
+  [features]=features
+  [orderFormStore]=orderFormStore
+  >
+</app-order-form>
+
+<app-editable-tree-view
+  *ngIf="mode === 'edit'"
+  [tree]=features
+  [orderFormStore]=orderFormStore
+  >
+</app-editable-tree-view>
+
+<button
+  *ngIf="mode === 'order'"
+  class=edit-mode-switch
+  (click)=editForm()
+  >
+  Edit form
+</button>
+
+<button
+  *ngIf="mode === 'edit'"
+  class=edit-mode-switch
+  (click)=previewForm()
+  >
+  Preview form
+</button>

@@ -6,6 +6,7 @@ h1, h2, h3 {
 :host {
   font-family: sans-serif;
   display: block;
+  position: relative;
   max-width: 50em;
   margin: 3em auto;
   padding: 1em;
@@ -15,4 +16,10 @@ h1, h2, h3 {
 
 h2 {
   margin-bottom: 0.6em
+}
+
+.edit-mode-switch {
+  position: absolute;
+  left: calc(100% + 1em);
+  top: 0;
 }
