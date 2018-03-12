@@ -12,6 +12,7 @@ import { FeatureTreeEditorFormComponent } from './feature-tree-editor-form/featu
 import { FormEditorService } from './feature-tree-editor-service';
 import { InlineFeatureEditorComponent } from './editable-tree-view/inline-feature-editor/inline-feature-editor.component';
 import { NumericInputComponent } from './form-elements/numeric-input/numeric-input.component';
+import { InlineFeatureSetEditorComponent } from './editable-tree-view/inline-feature-set-editor/inline-feature-set-editor.component';
 
 
 @NgModule({
@@ -22,7 +23,8 @@ import { NumericInputComponent } from './form-elements/numeric-input/numeric-inp
     EditableTreeViewComponent,
     FeatureTreeEditorFormComponent,
     InlineFeatureEditorComponent,
-    NumericInputComponent
+    NumericInputComponent,
+    InlineFeatureSetEditorComponent
   ],
   imports: [
     BrowserModule,

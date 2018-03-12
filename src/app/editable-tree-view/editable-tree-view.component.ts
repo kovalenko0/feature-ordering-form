@@ -22,6 +22,15 @@ export class EditableTreeViewComponent {
 
   private updateState() {
     const state = this.editorService.formState.get()
+
+    this.rootNodeFlow = (
+      this.tree != null &&
+      this.depth === 0 &&
+      this.tree.isBranch()
+    )
+      ? this.tree.content
+      : null
+
     this.editFeatureFlow =
       (
         state.type === 'edit-feature' &&
@@ -82,6 +91,12 @@ export class EditableTreeViewComponent {
       return []
     }
   }
+
+  public rootNodeFlow:
+    {
+      name: string
+    } | null
+    = null
 
   public editFeatureFlow:
     {

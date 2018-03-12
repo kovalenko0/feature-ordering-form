@@ -4,7 +4,6 @@ import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
   selector: 'app-numeric-input',
   template: `
     <input
-      type="number"
       [value]="value"
       (change)=handleInput($event.target.value)
       />
