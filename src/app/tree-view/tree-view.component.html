@@ -1,19 +1,20 @@
 <div>
-  <label>
-    <input
-      type="checkbox"
-      (change)="featureSelect($event.target.checked)"
-      [checked]="selected"
-      [indeterminate]="partiallySelected"
-      [disabled]=disabled
-      />
+  <input
+    type="checkbox"
+    (change)="featureSelect($event.target.checked)"
+    [checked]="selected"
+    [indeterminate]="partiallySelected"
+    [disabled]=disabled
+    />
+  <span (click)=featureSelected.next(tree)>
     {{label}}
-  </label>
+  </span>
 </div>
 <app-tree-view
   *ngFor="let option of children"
   [tree]=option
   [orderFormStore]=orderFormStore
   [disabled]=disabled
+  (featureSelected)=featureSelected.next($event)
   >
 </app-tree-view>

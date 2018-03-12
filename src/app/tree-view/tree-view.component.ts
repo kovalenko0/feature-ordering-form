@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, EventEmitter, Output } from '@angular/core';
 import { TreeNode, TreeBranch, TreeLeaf } from '../../utils/containers/tree';
 import { Feature, FeatureSet } from '../../entities/feature';
 import { traverseTree } from '../../utils/traverse-tree';
@@ -25,6 +25,9 @@ export class TreeViewComponent {
 
   @Input()
   public tree: FeatureNode
+
+  @Output()
+  public featureSelected = new EventEmitter<FeatureNode>()
 
   public get children() {
     if (this.tree.isBranch()) {

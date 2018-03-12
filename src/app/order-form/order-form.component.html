@@ -1,30 +1,36 @@
 <h2>We, programmers, love trees. So we've decided to make one for feature selection form!</h2>
 <form (submit)="$event.preventDefault(); submit()">
-  <app-tree-view
-    class=root
-    [tree]=features
-    [orderFormStore]=orderFormStore
-    [disabled]=disabled
-    >
-  </app-tree-view>
   <div>
-    <label>
-      Total:
-      <input
-        type="text"
-        readonly
-        [value]="orderFormStore.getTotalPrice().toFixed(2)"
-        />
-    </label>
+    <app-tree-view
+      class=root
+      [tree]=features
+      [orderFormStore]=orderFormStore
+      [disabled]=disabled
+      (featureSelected)=showPreview($event)
+      >
+    </app-tree-view>
+    <div>
+      <label>
+        Total:
+        <input
+          type="text"
+          readonly
+          [value]="orderFormStore.getTotalPrice().toFixed(2)"
+          />
+      </label>
+    </div>
+    <input
+      [disabled]=disabled
+      type="submit"
+      value="Submit order"
+      />
   </div>
-  <input
-    [disabled]=disabled
-    type="submit"
-    value="Submit order"
-    />
+  <div class="preview" *ngIf="preview">
+    {{preview}}
+  </div>
 </form>
 <iframe
-  *ngIf="responseURL != null"
+  *ngIf="responseURL"
   [src]="responseURL"
   frameborder="0">
 </iframe>
