@@ -57,19 +57,6 @@ export class FormEditorService {
     private store: FeaturesStorageService
   ) { }
 
-  public addChildFeature(params: FeatureParameters, location: FeatureSetNode) {
-    location.addLeaf({
-      name: params.name,
-      price: params.price
-    })
-  }
-
-  public addChildFeatureSet(params: FeatureSetParams, location: FeatureSetNode) {
-    location.addBranch({
-      name: params.name
-    })
-  }
-
   public formState = new ObservableValue<FormState>({ type: 'view' })
   private get state() {
     return this.formState.get()

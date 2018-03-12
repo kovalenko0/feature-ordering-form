@@ -22,7 +22,6 @@ export class AppComponent {
   ) {
     this.features = this.featuresStorage.getAvailableFeatures()
     this.orderFormStore = new FeaturesOrderStorage()
-    this.orderFormStore.selectFeature(this.featuresStorage.getAvailableFeatures().getChildren()[1])
   }
 
   public mode: 'edit' | 'order' = 'edit'
