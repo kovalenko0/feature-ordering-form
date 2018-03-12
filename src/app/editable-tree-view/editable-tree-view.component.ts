@@ -1,7 +1,9 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core'
 import { FeaturesOrderStorage } from '../features-order-storage'
 import { Feature, FeatureSet } from '../../entities/feature'
 import { TreeNode, TreeBranch, TreeLeaf } from '../../utils/containers/tree'
+import { FormEditorService, FormState, FeatureEditorState, FeatureSetEditorState } from '../feature-tree-editor-service'
+import { throwOnNull } from '../../utils/misc-utils';
 
 type FeatureNode = TreeNode<FeatureSet, Feature>
 
@@ -11,10 +13,52 @@ type FeatureNode = TreeNode<FeatureSet, Feature>
   styleUrls: ['./editable-tree-view.component.css']
 })
 export class EditableTreeViewComponent {
-  constructor() { }
+  constructor(
+    public editorService: FormEditorService
+  ) {
+    editorService.formState.subscribe(() => this.updateState())
+    this.updateState()
+  }
 
-  @Input()
-  public orderFormStore: FeaturesOrderStorage
+  private updateState() {
+    const state = this.editorService.formState.get()
+    this.editFeatureFlow =
+      (
+        state.type === 'edit-feature' &&
+        state.editorState.node === this.tree
+      )
+        ? { editorState: state.editorState }
+        : null
+
+    this.editFeatureSetFlow =
+      (
+        state.type === 'edit-feature-set' &&
+        state.editorState.node === this.tree
+      )
+        ? { editorState: state.editorState }
+        : null
+
+    if (!this.editFeatureFlow && !this.editFeatureSetFlow) {
+      this.featurePreviewFlow =
+        (
+          this.tree &&
+          this.tree.isLeaf()
+        )
+          ? this.tree.content
+          : null
+          
+      this.featureSetPreviewFlow =
+        (
+          this.tree &&
+          this.tree.isBranch()
+        )
+          ? this.tree.content
+          : null
+    } else {
+      this.featurePreviewFlow = null
+      this.featureSetPreviewFlow = null
+    }
+  }
 
   @Input()
   public depth: number = 0
@@ -22,30 +66,59 @@ export class EditableTreeViewComponent {
   @Input()
   public disabled: boolean = false
 
-  @Input()
-  public tree: FeatureNode
+  private tree: FeatureNode | null = null
+
+  @Input('tree')
+  public set _tree(node: FeatureNode) {
+    this.tree = node
+    this.updateState()
+  }
 
   public get children() {
-    if (this.tree.isBranch()) {
-      return this.tree.getChildren()
+    const tree = throwOnNull(this.tree)
+    if (tree.isBranch()) {
+      return tree.getChildren()
     } else {
       return []
     }
   }
 
-  public get label() {
-    return (
-      this.tree.content.name +
-      (
-        this.tree.isBranch()
-          ? ':'
-          : ''
-      ) +
-      (
-        this.tree.isLeaf()
-          ? '$' + this.tree.content.price.toFixed(2)
-          : ''
-      )
-    )
+  public editFeatureFlow:
+    {
+      editorState: FeatureEditorState
+    } | null
+    = null
+
+  public editFeatureSetFlow:
+    {
+      editorState: FeatureSetEditorState
+    } | null
+    = null
+
+  public featurePreviewFlow:
+    {
+      name: string,
+      price: number
+    } | null
+    = null
+  
+  public featureSetPreviewFlow:
+    {
+      name: string
+    } | null
+    = null
+
+  public edit() {
+    const tree = throwOnNull(this.tree)
+
+    if (tree.isBranch()) {
+      this.editorService.initiateFeatureSetEditing(tree)
+    } else if (tree.isLeaf()) {
+      this.editorService.initiateFeatureEditing(tree)      
+    }
+  }
+
+  public delete() {
+    this.editorService.delete(this.tree as any)
   }
 }

@@ -1,4 +1,5 @@
 import { keyValuePairs } from "./object-utils";
+import { Subject } from "rxjs/Subject";
 
 export type ValidationConfig<Subject, ValidationParameters> =
   {
@@ -49,12 +50,19 @@ export interface ObjectFieldValidationError<Subject> {
 }
 
 export type ObjectValidationResult<Subject> = {
-  valid: boolean,
+  valid: true,
+  subject: Subject
+} | {
+  valid: false,
   errors: ObjectFieldValidationError<Subject>[]
 }
 
-export function validateObject<Subject>(subject: Subject, validationConfig: ObjectValidationConfig<Subject>): ObjectValidationResult<Subject> {
-  return keyValuePairs(validationConfig)
+export type PartialSubject<Subject> = {
+  [key in keyof Subject]: Subject[key] | null | undefined
+}
+
+export function validateObject<Subject>(subject: PartialSubject<Subject>, validationConfig: ObjectValidationConfig<Subject>): ObjectValidationResult<Subject> {
+  const result = keyValuePairs(validationConfig)
     .reduce(
       (result, { key, value: config }) => {
         const value = subject[key]
@@ -75,8 +83,21 @@ export function validateObject<Subject>(subject: Subject, validationConfig: Obje
         return result
       },
       {
-        valid: true,
+        valid: true as true,
         errors: [] as ObjectFieldValidationError<Subject>[],
       }
     )
+  
+  if (result.valid) {
+    return {
+      valid: true,
+      errors: result.errors,
+      subject: subject as Subject
+    }
+  } else {
+    return {
+      valid: false,
+      errors: result.errors
+    }
+  }
 }

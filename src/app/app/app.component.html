@@ -5,12 +5,12 @@
   >
 </app-order-form>
 
-<app-editable-tree-view
+<app-feature-tree-editor-form
   *ngIf="mode === 'edit'"
-  [tree]=features
-  [orderFormStore]=orderFormStore
+  [features]=features
+  [editorService]=editorService
   >
-</app-editable-tree-view>
+</app-feature-tree-editor-form>
 
 <button
   *ngIf="mode === 'order'"

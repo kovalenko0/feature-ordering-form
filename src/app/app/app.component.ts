@@ -1,9 +1,14 @@
 import { Component } from '@angular/core'
-import { TreeBranch, createTreeRoot } from '../utils/containers/tree'
-import { Feature, FeatureSet } from '../entities/feature'
-import { FeaturesStorageService } from './features-storage.service'
-import { FeaturesOrderStorage } from './features-order-storage'
+import { TreeBranch, createTreeRoot } from '../../utils/containers/tree'
+import { Feature, FeatureSet } from '../../entities/feature'
+import { FeaturesStorageService } from '../features-storage.service'
+import { FeaturesOrderStorage } from '../features-order-storage'
 import { HttpClient } from '@angular/common/http'
+import { FormEditorService } from '../feature-tree-editor-service/';
+
+interface AppState {
+  features: 1
+}
 
 @Component({
   selector: 'app-root',
@@ -20,14 +25,17 @@ export class AppComponent {
     this.orderFormStore.selectFeature(this.featuresStorage.getAvailableFeatures().getChildren()[1])
   }
 
-  public mode: 'edit' | 'order' = 'order'
+  public mode: 'edit' | 'order' = 'edit'
 
   public features: TreeBranch<FeatureSet, Feature>
 
   public orderFormStore: FeaturesOrderStorage
 
+  public editorService: FormEditorService | null = null
+
   public editForm() {
     this.mode = 'edit'
+    this.editorService = new FormEditorService(this.featuresStorage)
   }
 
   public previewForm() {

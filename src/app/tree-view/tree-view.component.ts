@@ -49,6 +49,7 @@ export class TreeViewComponent {
       )
     )
   }
+
   public get selected() {
     return this.orderFormStore.getFeatureSelectionState(this.tree) === 'selected'
   }

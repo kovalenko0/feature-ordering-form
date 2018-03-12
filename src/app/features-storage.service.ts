@@ -75,5 +75,5 @@ function createTreeFromFeatures(features: any[], tree?: TreeBranch<FeatureSet, F
 }
 
 function getRandomPrice() {
-  return Math.random() * 10 + 5
+  return +(Math.random() * 10 + 5).toFixed(2)
 }

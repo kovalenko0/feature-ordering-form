@@ -1,12 +1,24 @@
 <div>
-  <label>
-    {{label}}
-  </label>
+  <app-inline-feature-editor
+    *ngIf="editFeatureFlow != null"
+    [editorState]="editFeatureFlow?.editorState"
+    (submit)="editorService.saveChanges()"
+    (cancel)="editorService.cancelEditing()"
+    >
+  </app-inline-feature-editor>
+  <span *ngIf="featurePreviewFlow">
+    <span (click)=edit()>{{featurePreviewFlow?.name}}</span>
+    <span (click)=edit()>{{featurePreviewFlow?.price}}</span>
+    <button (click)=delete()>X</button>
+  </span>
+  <span *ngIf="featureSetPreviewFlow">
+    <span (click)=edit()>{{featureSetPreviewFlow?.name}}</span>
+    <button (click)=delete()>X</button>
+  </span>
 </div>
 <app-editable-tree-view
   *ngFor="let option of children"
   [tree]=option
-  [orderFormStore]=orderFormStore
   [disabled]=disabled
   >
 </app-editable-tree-view>

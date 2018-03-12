@@ -1,4 +1,5 @@
-import { addIfMissing } from '../array-utils'
+import { addIfMissing, contains, remove } from '../array-utils'
+import { traverseTree } from '../traverse-tree';
 
 export class TreeNode<BranchContent, LeafContent> {
   protected canHaveChildren: boolean
@@ -43,6 +44,10 @@ export class TreeBranch<BranchContent, LeafContent> extends TreeNode<BranchConte
     this.children.push(child)
     return child
   }
+
+  public removeChild(node: TreeNode<BranchContent, LeafContent>) {
+    remove(this.children, node)
+  }
 }
 
 export class TreeLeaf<BranchContent, LeafContent> extends TreeNode<BranchContent, LeafContent> {
@@ -58,6 +63,22 @@ export function createTreeRoot<BranchContent, LeafContent>(content: BranchConten
   return new TreeBranch<BranchContent, LeafContent>(content)
 }
 
-const myTree = createTreeRoot<string, string>('0  ')
+export function findParent<BranchContent, LeafContent>(root: TreeNode<BranchContent, LeafContent>, node: TreeNode<BranchContent, LeafContent>): TreeBranch<BranchContent, LeafContent> {
+  if (root == node) {
+    throw new Error(`Root node can't be a child`)
+  }
 
-myTree.addBranch('0.0').addLeaf('0.0.0')
+  let result = null
+
+  traverseTree(root, possibleParent => {
+    if (possibleParent.isBranch() && contains(possibleParent.getChildren(), node)) {
+      result = possibleParent
+    }
+  })
+
+  if (result == null) {
+    throw new Error(`Node doesn't belong to specified tree`)
+  }
+
+  return result
+}
