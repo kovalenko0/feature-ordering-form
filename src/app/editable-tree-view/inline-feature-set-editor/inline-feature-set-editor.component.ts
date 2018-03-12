@@ -14,6 +14,7 @@ import { throwOnNull } from '../../../utils/misc-utils';
       <input
         [value]="state.name"
         (change)="state.name = $event.target.value"
+        placeholder="Name"
         />
       <div>
         <input

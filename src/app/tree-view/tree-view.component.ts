@@ -44,7 +44,7 @@ export class TreeViewComponent {
       ) +
       (
         this.tree.isLeaf()
-          ? '$' + this.tree.content.price.toFixed(2)
+          ? ' $' + this.tree.content.price.toFixed(2)
           : ''
       )
     )

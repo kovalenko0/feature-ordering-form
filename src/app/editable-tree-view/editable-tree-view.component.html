@@ -1,5 +1,7 @@
 <div *ngIf="rootNodeFlow != null">
   <span>{{rootNodeFlow?.name}}</span>
+  <button (click)=editorService.initiateNewFeatureCreation(tree)>Add feature</button>
+  <button (click)=editorService.initiateNewFeatureSetCreation(tree)>Add feature set</button>
 </div>
 <div *ngIf="rootNodeFlow == null">
   <app-inline-feature-editor
@@ -24,6 +26,8 @@
   <span *ngIf="featureSetPreviewFlow">
     <span (click)=edit()>{{featureSetPreviewFlow?.name}}</span>
     <button (click)=delete()>X</button>
+    <button (click)=editorService.initiateNewFeatureCreation(tree)>Add feature</button>
+    <button (click)=editorService.initiateNewFeatureSetCreation(tree)>Add feature set</button>
   </span>
 </div>
 <app-editable-tree-view
@@ -33,3 +37,19 @@
   [depth]="depth + 1"
   >
 </app-editable-tree-view>
+<app-inline-feature-editor
+  class="new-item-editor"
+  *ngIf="childFeatureIsBeingCreatedFlow != null"
+  [editorState]="childFeatureIsBeingCreatedFlow?.editorState"
+  (submit)="editorService.saveChanges()"
+  (cancel)="editorService.cancelEditing()"
+  >
+</app-inline-feature-editor>
+<app-inline-feature-set-editor
+  class="new-item-editor"
+  *ngIf="childFeatureSetIsBeingCreatedFlow != null"
+  [editorState]="childFeatureSetIsBeingCreatedFlow?.editorState"
+  (submit)="editorService.saveChanges()"
+  (cancel)="editorService.cancelEditing()"
+  >
+</app-inline-feature-set-editor>

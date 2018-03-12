@@ -14,10 +14,12 @@ import { throwOnNull } from '../../../utils/misc-utils';
       <input
         [value]="state.name"
         (change)="state.name = $event.target.value"
+        placeholder="Name"
         />
       <app-numeric-input
         [value]="state.price"
         (valueInput)="state.price = $event"
+        placeholder="Price"
         >
       </app-numeric-input>
       <div>

@@ -67,6 +67,30 @@ export class EditableTreeViewComponent {
       this.featurePreviewFlow = null
       this.featureSetPreviewFlow = null
     }
+
+    if (
+      state.type === 'edit-feature' &&
+      state.newItemParameters != null &&
+      state.newItemParameters.parent === this.tree
+    ) {
+      this.childFeatureIsBeingCreatedFlow = {
+        editorState: state.editorState
+      }
+    } else {
+      this.childFeatureIsBeingCreatedFlow = null
+    }
+
+    if (
+      state.type === 'edit-feature-set' &&
+      state.newItemParameters != null &&
+      state.newItemParameters.parent === this.tree
+    ) {
+      this.childFeatureSetIsBeingCreatedFlow = {
+        editorState: state.editorState
+      }
+    } else {
+      this.childFeatureSetIsBeingCreatedFlow = null
+    }
   }
 
   @Input()
@@ -75,7 +99,7 @@ export class EditableTreeViewComponent {
   @Input()
   public disabled: boolean = false
 
-  private tree: FeatureNode | null = null
+  public tree: FeatureNode | null = null
 
   @Input('tree')
   public set _tree(node: FeatureNode) {
@@ -120,6 +144,18 @@ export class EditableTreeViewComponent {
   public featureSetPreviewFlow:
     {
       name: string
+    } | null
+    = null
+
+  public childFeatureIsBeingCreatedFlow:
+    {
+      editorState: FeatureEditorState
+    } | null
+    = null
+
+  public childFeatureSetIsBeingCreatedFlow:
+    {
+      editorState: FeatureSetEditorState
     } | null
     = null
 

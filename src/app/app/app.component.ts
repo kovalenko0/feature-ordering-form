@@ -20,8 +20,8 @@ export class AppComponent {
     private featuresStorage: FeaturesStorageService,
     private client: HttpClient
   ) {
-    this.orderFormStore = new FeaturesOrderStorage()
     this.features = this.featuresStorage.getAvailableFeatures()
+    this.orderFormStore = new FeaturesOrderStorage()
     this.orderFormStore.selectFeature(this.featuresStorage.getAvailableFeatures().getChildren()[1])
   }
 
@@ -40,5 +40,6 @@ export class AppComponent {
 
   public previewForm() {
     this.mode = 'order'
+    this.orderFormStore = new FeaturesOrderStorage()
   }
 }

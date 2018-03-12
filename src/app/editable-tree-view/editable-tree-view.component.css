@@ -1,5 +1,8 @@
 :host {
   display: block;
+}
+
+:host, .new-item-editor {
   padding-left: 1em;
 }
 

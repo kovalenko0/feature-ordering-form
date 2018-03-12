@@ -36,11 +36,17 @@ export type FormState = (
     type: 'view'
   } |
   {
-    type: 'edit-feature',
+    type: 'edit-feature'
+    newItemParameters?: {
+      parent: FeatureSetNode
+    }
     editorState: FeatureEditorState
   } |
   {
     type: 'edit-feature-set',
+    newItemParameters?: {
+      parent: FeatureSetNode
+    }
     editorState: FeatureSetEditorState
   }
 )
@@ -94,6 +100,34 @@ export class FormEditorService {
     }
   }
 
+  public initiateNewFeatureCreation(parent: FeatureSetNode) {
+    if (this.state.type === 'view') {
+      this.state = {
+        type: 'edit-feature',
+        newItemParameters: {
+          parent
+        },
+        editorState: new FeatureEditorState(null)
+      }
+    } else {
+      throw new Error(`You can only switch to 'edit-feature' state from 'view' state`)
+    }
+  }
+
+  public initiateNewFeatureSetCreation(parent: FeatureSetNode) {
+    if (this.state.type === 'view') {
+      this.state = {
+        type: 'edit-feature-set',
+        newItemParameters: {
+          parent
+        },
+        editorState: new FeatureSetEditorState(null)
+      }
+    } else {
+      throw new Error(`You can only switch to 'edit-feature-set' state from 'view' state`)
+    }
+  }
+
   public delete(node: FeatureTreeNode) {
     const parent = findParent(this.store.getAvailableFeatures(), node)
     parent.removeChild(node)
@@ -132,6 +166,15 @@ export class FormEditorService {
             originalNode.content = state.editorState.getFeature()
           } else if (state.type === 'edit-feature-set') {
             originalNode.content = state.editorState.getFeatureSet()            
+          }
+        } else if (state.newItemParameters != null) {
+          const newItemParameters = state.newItemParameters
+          
+          if (state.type === 'edit-feature') {
+            newItemParameters.parent.addLeaf(state.editorState.getFeature())
+          }
+          if (state.type === 'edit-feature-set') {
+            newItemParameters.parent.addBranch(state.editorState.getFeatureSet())
           }
         }
         this.state = nextState

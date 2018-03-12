@@ -6,6 +6,7 @@ import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
     <input
       [value]="value"
       (change)=handleInput($event.target.value)
+      [placeholder]=placeholder
       />
   `,
   styles: []
@@ -15,6 +16,9 @@ export class NumericInputComponent {
 
   @Input()
   public value: number | null = null
+
+  @Input()
+  public placeholder: string = ""
 
   @Output()
   public valueInput = new EventEmitter<number | null>()
