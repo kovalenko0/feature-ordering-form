@@ -1,8 +1,8 @@
-import { Component, OnInit, Input } from '@angular/core';
-import { FeaturesOrderStorage } from '../features-order-storage';
-import { TreeBranch, TreeNode } from '../../utils/containers/tree';
-import { FeatureSet, Feature } from '../../entities/feature';
-import { ShopClientService } from '../shop-client.service';
+import { Component, OnInit, Input } from '@angular/core'
+import { FeaturesOrderStorage } from '../features-order-storage'
+import { TreeBranch, TreeNode } from '../../utils/containers/tree'
+import { FeatureSet, Feature } from '../../entities/feature'
+import { ShopClientService } from '../shop-client.service'
 
 @Component({
   selector: 'app-order-form',

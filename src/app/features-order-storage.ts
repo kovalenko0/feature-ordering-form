@@ -2,7 +2,6 @@ import { Feature, FeatureSet } from '../entities/feature'
 import { traverseTree } from '../utils/traverse-tree'
 import { TreeNode, TreeLeaf } from '../utils/containers/tree'
 import { addIfMissing, remove, contains } from '../utils/array-utils'
-import { Injectable } from '@angular/core';
 
 export class FeaturesOrderStorage {
   constructor() {

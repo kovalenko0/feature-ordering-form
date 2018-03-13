@@ -1,8 +1,8 @@
-import { Component, Input, OnInit, EventEmitter, Output } from '@angular/core';
-import { TreeNode, TreeBranch, TreeLeaf } from '../../utils/containers/tree';
-import { Feature, FeatureSet } from '../../entities/feature';
-import { traverseTree } from '../../utils/traverse-tree';
-import { FeaturesOrderStorage } from '../features-order-storage';
+import { Component, Input, OnInit, EventEmitter, Output } from '@angular/core'
+import { TreeNode, TreeBranch, TreeLeaf } from '../../utils/containers/tree'
+import { Feature, FeatureSet } from '../../entities/feature'
+import { traverseTree } from '../../utils/traverse-tree'
+import { FeaturesOrderStorage } from '../features-order-storage'
 
 type FeatureNode = TreeNode<FeatureSet, Feature>
 

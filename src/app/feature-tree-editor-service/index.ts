@@ -2,34 +2,14 @@ import { Injectable, Inject } from '@angular/core'
 import { FeaturesStorageService } from '../features-storage.service'
 import { Feature, FeatureSet } from '../../entities/feature'
 import { TreeBranch, TreeLeaf, findParent } from '../../utils/containers/tree'
-import { validateObject, ObjectValidationResult } from '../../utils/validation';
-import { Observable } from 'rxjs/Observable';
-import { Subject } from 'rxjs/Subject';
-import { ObservableValue } from '../../utils/observable-value';
+import { validateObject, ObjectValidationResult } from '../../utils/validation'
+import { Observable } from 'rxjs/Observable'
+import { Subject } from 'rxjs/Subject'
+import { ObservableValue } from '../../utils/observable-value'
 
 type FeatureNode = TreeLeaf<FeatureSet, Feature>
 type FeatureSetNode = TreeBranch<FeatureSet, Feature>
 type FeatureTreeNode = FeatureNode | FeatureSetNode
-
-export interface FeatureParameters {
-  name: string,
-  price: number
-}
-
-export interface FeatureSetParams {
-  name: string
-}
-
-export type FeatureLocation =
-  {
-    before: FeatureSet | Feature
-  } |
-  {
-    after: FeatureSet | Feature
-  } |
-  {
-    into: FeatureSet
-  }
 
 export type FormState = (
   {
@@ -55,7 +35,9 @@ export class FormEditorService {
   constructor(
     @Inject(FeaturesStorageService)
     private store: FeaturesStorageService
-  ) { }
+  ) {
+
+  }
 
   public formState = new ObservableValue<FormState>({ type: 'view' })
   private get state() {
@@ -69,7 +51,7 @@ export class FormEditorService {
     if (this.state.type === 'view') {
       this.state = {
         type: 'edit-feature',
-        editorState: new FeatureEditorState(featureNode)
+        editorState: new FeatureEditorState(featureNode, null)
       }
     } else {
       throw new Error(`You can only switch to 'edit-feature' state from 'view' state`)
@@ -80,7 +62,7 @@ export class FormEditorService {
     if (this.state.type === 'view') {
       this.state = {
         type: 'edit-feature-set',
-        editorState: new FeatureSetEditorState(featureSetNode)
+        editorState: new FeatureSetEditorState(featureSetNode, null)
       }
     } else {
       throw new Error(`You can only switch to 'edit-feature-set' state from 'view' state`)
@@ -94,7 +76,7 @@ export class FormEditorService {
         newItemParameters: {
           parent
         },
-        editorState: new FeatureEditorState(null)
+        editorState: new FeatureEditorState(null, parent)
       }
     } else {
       throw new Error(`You can only switch to 'edit-feature' state from 'view' state`)
@@ -108,7 +90,7 @@ export class FormEditorService {
         newItemParameters: {
           parent
         },
-        editorState: new FeatureSetEditorState(null)
+        editorState: new FeatureSetEditorState(null, parent)
       }
     } else {
       throw new Error(`You can only switch to 'edit-feature-set' state from 'view' state`)
@@ -116,8 +98,14 @@ export class FormEditorService {
   }
 
   public delete(node: FeatureTreeNode) {
-    const parent = findParent(this.store.getAvailableFeatures(), node)
-    parent.removeChild(node)
+    if (
+      this.state.type === 'view'
+    ) {
+      const parent = findParent(this.store.getAvailableFeatures(), node)
+      parent.removeChild(node)
+    } else {
+      throw new Error(`Can't call delete action when not in 'view' state`)
+    }
   }
 
   public cancelEditing() {
@@ -134,37 +122,13 @@ export class FormEditorService {
   }
 
   public saveChanges() {
-    const state = this.state
-
     if (
-      state.type === 'edit-feature' ||
-      state.type === 'edit-feature-set'
+      this.state.type === 'edit-feature' ||
+      this.state.type === 'edit-feature-set'
     ) {
-      const nextState = {
+      this.state.editorState.save()
+      this.state = {
         type: 'view'
-      } as FormState
-
-      if (state.editorState.noInputDone()) {
-        this.state = nextState
-      } else {
-        const originalNode = state.editorState.node
-        if (originalNode != null) {
-          if (state.type === 'edit-feature') {
-            originalNode.content = state.editorState.getFeature()
-          } else if (state.type === 'edit-feature-set') {
-            originalNode.content = state.editorState.getFeatureSet()            
-          }
-        } else if (state.newItemParameters != null) {
-          const newItemParameters = state.newItemParameters
-          
-          if (state.type === 'edit-feature') {
-            newItemParameters.parent.addLeaf(state.editorState.getFeature())
-          }
-          if (state.type === 'edit-feature-set') {
-            newItemParameters.parent.addBranch(state.editorState.getFeatureSet())
-          }
-        }
-        this.state = nextState
       }
     } else {
       throw new Error(`Can't call saveChanges action when not in 'edit-feature' or 'edit-feature-set' states`)
@@ -178,7 +142,7 @@ const nameValidatorConfig = {
 }
 
 export class FeatureEditorState {
-  constructor(public node: FeatureNode | null) {
+  constructor(public node: FeatureNode | null, private parent: FeatureSetNode | null) {
     this.name = node ? node.content.name : ''
     this.price = node ? node.content.price : null
   }
@@ -212,13 +176,25 @@ export class FeatureEditorState {
     }
   }
 
+  public save() {
+    if (this.noInputDone()) {
+      return
+    } else {
+      if (this.node != null) {
+        this.node.content = this.getFeature()
+      } else if (this.parent != null) {
+        this.parent.addLeaf(this.getFeature())
+      }
+    }
+  }
+
   public noInputDone() {
     return this.name === '' && this.price == null
   }
 }
 
 export class FeatureSetEditorState {
-  constructor(public node: FeatureSetNode | null) {
+  constructor(public node: FeatureSetNode | null, private parent: FeatureSetNode | null) {
     this.name = node ? node.content.name : ''
   }
 
@@ -243,5 +219,17 @@ export class FeatureSetEditorState {
 
   public noInputDone() {
     return this.name === ''
+  }
+
+  public save() {
+    if (this.noInputDone()) {
+      return
+    } else {
+      if (this.node != null) {
+        this.node.content = this.getFeatureSet()
+      } else if (this.parent != null) {
+        this.parent.addBranch(this.getFeatureSet())
+      }
+    }
   }
 }

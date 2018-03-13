@@ -1,6 +1,6 @@
-import { Injectable } from '@angular/core';
-import { Feature, FeatureSet } from '../entities/feature';
-import { TreeBranch, serializeTree, deserializeTree } from '../utils/containers/tree';
+import { Injectable } from '@angular/core'
+import { Feature, FeatureSet } from '../entities/feature'
+import { TreeBranch, serializeTree, deserializeTree } from '../utils/containers/tree'
 
 const dummyFeatures = [
   {
@@ -45,7 +45,6 @@ const dummyFeatures = [
 @Injectable()
 export class FeaturesStorageService {
   constructor() {
-
     this.features = this.load()
     this.features.stateUpdated.subscribe(state => localStorage.setItem(
       'feature-set',

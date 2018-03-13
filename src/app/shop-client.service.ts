@@ -1,6 +1,6 @@
-import { Injectable } from '@angular/core';
-import { FeaturesOrderStorage } from './features-order-storage';
-import { HttpClient } from '@angular/common/http';
+import { Injectable } from '@angular/core'
+import { FeaturesOrderStorage } from './features-order-storage'
+import { HttpClient } from '@angular/common/http'
 
 export interface OrderSubmissionResponse {
   saleURL: string
@@ -8,7 +8,6 @@ export interface OrderSubmissionResponse {
 
 @Injectable()
 export class ShopClientService {
-
   constructor(
     private client: HttpClient
   ) { }
