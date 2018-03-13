@@ -3,6 +3,7 @@ import { FeaturesOrderStorage } from '../features-order-storage'
 import { TreeBranch, TreeNode } from '../../utils/containers/tree'
 import { FeatureSet, Feature } from '../../entities/feature'
 import { ShopClientService } from '../shop-client.service'
+import { SafeUrl, SafeResourceUrl } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-order-form',
@@ -20,9 +21,9 @@ export class OrderFormComponent {
   @Input()
   public features: TreeBranch<FeatureSet, Feature>
 
-  public responseURL: string | null
+  public responseURL: SafeResourceUrl | null
 
-  public serverError: boolean = false
+  public serverError: boolean | string = false
 
   public busy: boolean = false
 
@@ -38,7 +39,13 @@ export class OrderFormComponent {
       .client
       .submitOrder(this.orderFormStore)
       .then(result => this.responseURL = result.saleURL)
-      .catch(() => this.serverError = true)
+      .catch(error => {
+        if (error.status_error_details) {
+          this.serverError = error.status_error_details
+        } else {
+          this.serverError = `Got problems communicating with server. Please, try again later or contact our support`
+        }
+      })
       .then(() => this.busy = false)
   }
 

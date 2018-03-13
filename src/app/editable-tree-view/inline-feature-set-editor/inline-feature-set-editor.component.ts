@@ -20,7 +20,7 @@ import { throwOnNull } from '../../../utils/misc-utils';
         <input
           type="button"
           value="Cancel"
-          (click)="cancel.next(editorState)"
+          (click)="handleCancel()"
           />
         <input
           type="submit"
@@ -48,6 +48,10 @@ export class InlineFeatureSetEditorComponent {
     if (validationResults.valid) {
       this.submit.next(this.state)
     }
+  }
+
+  public handleCancel() {
+    this.cancel.next(this.editorState || undefined)
   }
 
   public get state() {

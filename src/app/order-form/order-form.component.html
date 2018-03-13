@@ -34,4 +34,8 @@
   [src]="responseURL"
   frameborder="0">
 </iframe>
-<div *ngIf="serverError">Got problems communicating with server. Please, try again later or contact <a href="mailto:support@support.com">our support</a></div>
+<div *ngIf="serverError">
+  {{
+    serverError
+  }}
+</div>
