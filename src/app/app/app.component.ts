@@ -24,7 +24,7 @@ export class AppComponent {
     this.orderFormStore = new FeaturesOrderStorage()
   }
 
-  public mode: 'edit' | 'order' = 'edit'
+  public mode: 'edit' | 'order' = 'order'
 
   public features: TreeBranch<FeatureSet, Feature>
 
